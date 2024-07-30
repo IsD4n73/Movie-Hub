@@ -350,13 +350,6 @@ class _DetailsPageState extends State<DetailsPage> {
                                       fontSize: 16,
                                     ),
                                   ),
-                                  Text(
-                                    "${detailsSerie!.numberOfEpisodes} ${"episodi".tr()}",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
                                   const SizedBox(height: 10),
                                   Text(detailsSerie!.genres
                                       .map(
@@ -405,10 +398,8 @@ class _DetailsPageState extends State<DetailsPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        buildAppbar("Dove guardare", null).title!,
-                        const SizedBox(height: 10),
-                        const SizedBox(height: 20),
-                        buildAppbar("Galleria", null).title!,
+                        const Divider(),
+                        buildAppbar("Galleria".tr(), null).title!,
                         const SizedBox(height: 10),
                         SizedBox(
                           height: 250,
