@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_hub/views/film_tile.dart';
 
@@ -22,7 +23,7 @@ class _SearchPageState extends State<SearchPage> {
             const SizedBox(height: 10),
             SearchBar(
               controller: searchController,
-              hintText: "Ricerca",
+              hintText: "Ricerca".tr(),
               leading: const Icon(Icons.search),
               shape: const WidgetStatePropertyAll<OutlinedBorder>(
                 RoundedRectangleBorder(
@@ -33,9 +34,9 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
             const SizedBox(height: 10),
-            const Text(
-              "Risultati di ricerca (3)",
-              style: TextStyle(
+            Text(
+              "Risultati di ricerca".tr(args: ["3"]),
+              style: const TextStyle(
                 fontSize: 18,
               ),
             ),
@@ -45,12 +46,13 @@ class _SearchPageState extends State<SearchPage> {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: 3,
               itemBuilder: (context, index) => FilmTile(
-                  title: "title",
-                  description: "description",
-                  imageUrl: "imageUrl",
-                  rating: 2.5,
-                  onTap: () {},
-                  tags: "tags"),
+                title: "title",
+                description: "description",
+                imageUrl: "imageUrl",
+                rating: 2.5,
+                onTap: () {},
+                tags: "tags",
+              ),
             )
           ],
         ),

@@ -18,3 +18,4 @@ inspired by:
 
 # Language
 > 🇮🇹 Italiano
+> 🇺🇸 English

@@ -1,8 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
-import 'package:movie_hub/commons/app_bar.dart';
 import 'package:movie_hub/views/details_page.dart';
 import 'package:movie_hub/views/film_tile.dart';
 

@@ -1,4 +1,5 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_hub/commons/vars.dart';
 
@@ -22,9 +23,9 @@ class _InfoPageState extends State<InfoPage> {
             RichText(
               text: TextSpan(
                 children: [
-                  const TextSpan(
-                    text: "Versione: ",
-                    style: TextStyle(
+                  TextSpan(
+                    text: "Versione: ".tr(),
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
                   ),
@@ -42,9 +43,9 @@ class _InfoPageState extends State<InfoPage> {
             RichText(
               text: TextSpan(
                 children: [
-                  const TextSpan(
-                    text: "Numero build: ",
-                    style: TextStyle(
+                  TextSpan(
+                    text: "Numero build: ".tr(),
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
                   ),
@@ -86,9 +87,10 @@ class _InfoPageState extends State<InfoPage> {
             const SizedBox(height: 20),
             const Divider(),
             const SizedBox(height: 20),
-            CustomDropdown<String>(
-              hintText: 'Lingua App',
-              items: const ["it", "en"],
+            CustomDropdown<Locale>(
+              hintText: 'Lingua App'.tr(),
+              items: context.supportedLocales,
+              initialItem: context.locale,
               decoration: CustomDropdownDecoration(
                 closedFillColor: Theme.of(context).scaffoldBackgroundColor,
                 expandedFillColor: Theme.of(context).scaffoldBackgroundColor,
@@ -100,7 +102,10 @@ class _InfoPageState extends State<InfoPage> {
                 ),
                 prefixIcon: const Icon(Icons.language),
               ),
-              onChanged: (value) {},
+              onChanged: (value) {
+                context.setLocale(value!);
+                setState(() {});
+              },
             )
           ],
         ),

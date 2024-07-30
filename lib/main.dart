@@ -1,4 +1,5 @@
 import 'package:bot_toast/bot_toast.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -13,12 +14,22 @@ import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
+  await EasyLocalization.ensureInitialized();
   await dotenv.load(fileName: ".env");
   Vars.packageInfo = await PackageInfo.fromPlatform();
 
-  runApp(const MyApp());
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [
+        Locale('en'),
+        Locale('it'),
+      ],
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en'),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -30,6 +41,9 @@ class MyApp extends StatelessWidget {
       title: 'Movie Hub',
       builder: BotToastInit(),
       navigatorObservers: [BotToastNavigatorObserver()],
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.primaryColor,
@@ -55,7 +69,6 @@ class _AppScaffoldState extends State<AppScaffold> {
   @override
   void initState() {
     Vars.apiKey = dotenv.env['APIKEY'] ?? "";
-    FlutterNativeSplash.remove();
     super.initState();
   }
 
@@ -71,15 +84,15 @@ class _AppScaffoldState extends State<AppScaffold> {
         items: [
           SalomonBottomBarItem(
             icon: const Icon(Icons.home),
-            title: const Text("Home"),
+            title: const Text("Home").tr(),
           ),
           SalomonBottomBarItem(
             icon: const Icon(Icons.search),
-            title: const Text("Ricerca"),
+            title: const Text("Ricerca").tr(),
           ),
           SalomonBottomBarItem(
             icon: const Icon(Icons.info),
-            title: const Text("Info"),
+            title: const Text("Info").tr(),
           ),
         ],
       ),
@@ -101,7 +114,7 @@ class _AppScaffoldState extends State<AppScaffold> {
         );
       case 2:
         return buildAppbar(
-          "Informazioni",
+          "Info",
           () {
             setState(() {
               _currentIndex = 0;
