@@ -5,10 +5,12 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:movie_hub/commons/app_colors.dart';
 import 'package:movie_hub/models/movie_details.dart';
 import 'package:movie_hub/models/movies_images.dart';
+import 'package:movie_hub/models/serie_details.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:readmore/readmore.dart';
 
 import '../commons/vars.dart';
+import '../models/serie_images.dart';
 import '../models/tmdb_genreIds.dart' as genreIds;
 
 class DetailsPage extends StatefulWidget {
@@ -24,6 +26,7 @@ class DetailsPage extends StatefulWidget {
 class _DetailsPageState extends State<DetailsPage> {
   List<String> images = [];
   MovieDetails? detailsMovie;
+  SerieDetails? detailsSerie;
 
   late List<genreIds.Genre> generesMovie;
   late List<genreIds.Genre> generesSeries;
@@ -86,7 +89,28 @@ class _DetailsPageState extends State<DetailsPage> {
         } else {
           var json = await Vars.tmdbClient.tv.getDetails(widget.mediaId)
               as Map<String, dynamic>;
-          detailsMovie = MovieDetails.fromJson(json);
+          detailsSerie = SerieDetails.fromJson(json);
+
+          var imageJson = await Vars.tmdbClient.tv.getImages(widget.mediaId,
+                  includeImageLanguage:
+                      "${context.supportedLocales.join(",")},null")
+              as Map<String, dynamic>;
+          SerieImages imgs = SerieImages.fromJson(imageJson);
+
+          var links = imgs.posters
+              .map((e) => "${Vars.imageBaseUrl}${e.filePath}")
+              .toList();
+
+          links.addAll(
+            imgs.backdrops.map((e) => "${Vars.imageBaseUrl}${e.filePath}"),
+          );
+
+          for (var url in links) {
+            images.add(url);
+          }
+
+          selectedImg = images.first;
+
           setState(() {});
         }
         cancel();
@@ -235,9 +259,11 @@ class _DetailsPageState extends State<DetailsPage> {
                     ),
                     const SizedBox(height: 10),
                     FilledButton(
-                      onPressed: () async {
-                        //TODO download image from link
-                      },
+                      onPressed: selectedImg != ""
+                          ? () async {
+                              //TODO download image from link
+                            }
+                          : null,
                       style: FilledButton.styleFrom(
                         minimumSize:
                             Size(MediaQuery.of(context).size.width, 40),
@@ -253,7 +279,156 @@ class _DetailsPageState extends State<DetailsPage> {
                   ],
                 ),
               )
-            : const SizedBox.shrink(),
+            : detailsSerie != null
+                ? SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Stack(
+                          children: [
+                            Image.network(
+                              "${Vars.imageBaseUrl}${detailsSerie!.backdropPath}",
+                              height: MediaQuery.of(context).size.height / 2,
+                              width: MediaQuery.of(context).size.width,
+                            ),
+                            Container(
+                              height: MediaQuery.of(context).size.height / 2,
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.black,
+                                  ],
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    detailsSerie!.name,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        detailsSerie!.voteAverage
+                                            .toStringAsFixed(2),
+                                        style: const TextStyle(
+                                          fontSize: 22,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      RatingBarIndicator(
+                                        rating: detailsSerie!.voteAverage / 2,
+                                        itemBuilder: (context, index) =>
+                                            const Icon(
+                                          Icons.star,
+                                          color: AppColors.primaryColor,
+                                        ),
+                                        itemCount: 5,
+                                        itemSize: 25,
+                                        direction: Axis.horizontal,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(detailsSerie!.genres
+                                      .map(
+                                        (e) => generesSeries
+                                            .firstWhere(
+                                                (element) => element.id == e.id)
+                                            .name,
+                                      )
+                                      .join(", ")),
+                                ],
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: IconButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                icon: const Icon(
+                                  Icons.chevron_left,
+                                  color: AppColors.primaryColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        ReadMoreText(
+                          detailsSerie!.overview,
+                          trimMode: TrimMode.Line,
+                          trimLines: 5,
+                          trimCollapsedText: ' Mostra altro'.tr(),
+                          trimExpandedText: ' Mostra meno'.tr(),
+                          style: const TextStyle(
+                            color: Colors.grey,
+                          ),
+                          moreStyle: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primaryColor,
+                          ),
+                          lessStyle: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          height: 250,
+                          width: MediaQuery.of(context).size.width,
+                          child: PhotoViewGallery.builder(
+                            onPageChanged: (index) {
+                              setState(() {
+                                selectedImg = images[index];
+                              });
+                            },
+                            itemCount: images.length,
+                            builder: (context, index) {
+                              return PhotoViewGalleryPageOptions(
+                                imageProvider: NetworkImage(images[index]),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        FilledButton(
+                          onPressed: selectedImg != ""
+                              ? () async {
+                                  //TODO download image from link
+                                }
+                              : null,
+                          style: FilledButton.styleFrom(
+                            minimumSize:
+                                Size(MediaQuery.of(context).size.width, 40),
+                            backgroundColor: AppColors.primaryColor,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          child: Text("Scarica immagine".tr()),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  )
+                : const SizedBox.shrink(),
       ),
     );
   }
