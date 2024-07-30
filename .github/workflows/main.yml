@@ -1,0 +1,29 @@
+name: Flutter CI Build
+
+on:
+  push
+
+jobs:
+  build:
+    permissions: write-all
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+
+        with:
+          java-version: '17.x'
+
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+
+      - run: flutter pub get
+      - run: flutter build apk --release
+
+      - uses: softprops/action-gh-release@v1
+        with:
+          tag_name: "rel"
+          files: |
+            build/app/outputs/flutter-apk/app-release.apk
