@@ -2,6 +2,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:movie_hub/commons/app_bar.dart';
 import 'package:movie_hub/commons/app_colors.dart';
 import 'package:movie_hub/models/movie_details.dart';
 import 'package:movie_hub/models/movies_images.dart';
@@ -342,6 +343,21 @@ class _DetailsPageState extends State<DetailsPage> {
                                     ],
                                   ),
                                   const SizedBox(height: 10),
+                                  Text(
+                                    "${(detailsSerie!.firstAirDate?.year ?? "N/A")} - ${detailsSerie!.inProduction ? "In corso".tr() : (detailsSerie!.lastAirDate?.year ?? "N/A")} (${detailsSerie!.numberOfEpisodes} ${"episodi".tr()})",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${detailsSerie!.numberOfEpisodes} ${"episodi".tr()}",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
                                   Text(detailsSerie!.genres
                                       .map(
                                         (e) => generesSeries
@@ -389,6 +405,11 @@ class _DetailsPageState extends State<DetailsPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
+                        buildAppbar("Dove guardare", null).title!,
+                        const SizedBox(height: 10),
+                        const SizedBox(height: 20),
+                        buildAppbar("Galleria", null).title!,
+                        const SizedBox(height: 10),
                         SizedBox(
                           height: 250,
                           width: MediaQuery.of(context).size.width,
