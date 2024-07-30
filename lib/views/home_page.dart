@@ -7,6 +7,7 @@ import 'package:movie_hub/commons/vars.dart';
 import 'package:movie_hub/models/discover_movies.dart';
 import 'package:movie_hub/models/discover_series.dart';
 import 'package:movie_hub/models/tmdb_genreIds.dart';
+import 'package:movie_hub/views/details_page.dart';
 import 'package:movie_hub/views/film_tile.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -107,7 +108,7 @@ class _HomePageState extends State<HomePage> {
             onChanged: (i) => setState(() => selectedType = i),
           ),
           allLoaded
-              ? selectedType == 0
+              ? selectedType == 0 // movie type
                   ? ListView.builder(
                       itemCount: movies.results.length,
                       physics: const NeverScrollableScrollPhysics(),
@@ -118,7 +119,15 @@ class _HomePageState extends State<HomePage> {
                           description: movies.results[index].overview,
                           imageUrl: movies.results[index].posterPath,
                           rating: movies.results[index].voteAverage,
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailsPage(
+                                    movies.results[index].id, "movie"),
+                              ),
+                            );
+                          },
                           tags: movies.results[index].genreIds
                               .map(
                                 (e) => generesMovie
@@ -139,7 +148,15 @@ class _HomePageState extends State<HomePage> {
                           description: series.results[index].overview,
                           imageUrl: series.results[index].posterPath,
                           rating: series.results[index].voteAverage,
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    DetailsPage(series.results[index].id, "tv"),
+                              ),
+                            );
+                          },
                           tags: series.results[index].genreIds
                               .map(
                                 (e) => generesSeries

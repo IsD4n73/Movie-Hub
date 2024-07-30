@@ -4,6 +4,8 @@ import 'package:movie_hub/commons/vars.dart';
 import 'package:movie_hub/models/multi_search.dart';
 import 'package:movie_hub/views/film_tile_grid.dart';
 
+import 'details_page.dart';
+
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 
@@ -84,7 +86,16 @@ class _SearchPageState extends State<SearchPage> {
                             : search!.results[index].name,
                         imageUrl: search!.results[index].posterPath,
                         rating: search!.results[index].voteAverage,
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailsPage(
+                                  search!.results[index].id,
+                                  search!.results[index].mediaType),
+                            ),
+                          );
+                        },
                       );
                     },
                   )
