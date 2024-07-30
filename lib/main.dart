@@ -11,6 +11,7 @@ import 'package:movie_hub/views/info_page.dart';
 import 'package:movie_hub/views/search_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:tmdb_api/tmdb_api.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -69,6 +70,15 @@ class _AppScaffoldState extends State<AppScaffold> {
   @override
   void initState() {
     Vars.apiKey = dotenv.env['APIKEY'] ?? "";
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Vars.tmdbClient = TMDB(
+        ApiKeys(Vars.apiKey, 'NULL'),
+        defaultLanguage: context.locale.languageCode,
+        logConfig: const ConfigLogger.recommended(),
+      ).v3;
+    });
+
     super.initState();
   }
 

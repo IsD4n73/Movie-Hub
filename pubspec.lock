@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.1"
+  animated_toggle_switch:
+    dependency: "direct main"
+    description:
+      name: animated_toggle_switch
+      sha256: "35e3d6c74eef79c415ac3986046c35cb1ea42720afce13ec7f1a014f72dfd71c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.2"
   ansicolor:
     dependency: transitive
     description:
@@ -81,6 +89,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  colorize:
+    dependency: transitive
+    description:
+      name: colorize
+      sha256: "584746cd6ba1cba0633b6720f494fe6f9601c4170f0666c1579d2aa2a61071ba"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   crypto:
     dependency: transitive
     description:
@@ -106,7 +122,7 @@ packages:
     source: hosted
     version: "1.0.8"
   dio:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: dio
       sha256: e17f6b3097b8c51b72c74c9f071a605c47bcc8893839bd66732457a5ebe73714
@@ -453,6 +469,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
+  skeletonizer:
+    dependency: "direct main"
+    description:
+      name: skeletonizer
+      sha256: "9dcaec747d200a299bc457ffe51f135b9856b7f9097e851e277c4c95f563893b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.1+1"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -506,6 +530,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0"
+  tmdb_api:
+    dependency: "direct main"
+    description:
+      name: tmdb_api
+      sha256: d0db63d044dcc104731610b68f496d7a672dde70b5261f6272c8dfba2d4489d7
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   typed_data:
     dependency: transitive
     description:
