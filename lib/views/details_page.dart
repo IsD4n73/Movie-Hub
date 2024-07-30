@@ -399,6 +399,9 @@ class _DetailsPageState extends State<DetailsPage> {
                         ),
                         const SizedBox(height: 20),
                         const Divider(),
+                        buildAppbar("Dove Guardare".tr(), null).title!,
+                        const SizedBox(height: 20),
+                        const Divider(),
                         buildAppbar("Galleria".tr(), null).title!,
                         const SizedBox(height: 10),
                         SizedBox(
