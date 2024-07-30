@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../commons/app_colors.dart';
+import '../commons/vars.dart';
 
 class FilmTileGrid extends StatelessWidget {
   final String title, imageUrl;
@@ -35,7 +36,7 @@ class FilmTileGrid extends StatelessWidget {
                 Radius.circular(15),
               ),
               child: Image.network(
-                imageUrl,
+                "${Vars.imageBaseUrl}$imageUrl",
                 height: 270,
                 width: 180,
                 fit: BoxFit.fill,
@@ -59,7 +60,7 @@ class FilmTileGrid extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  rating.toString(),
+                  rating.toStringAsFixed(2),
                   style: const TextStyle(
                     fontSize: 22,
                   ),
