@@ -7,6 +7,8 @@ import 'package:movie_hub/commons/app_colors.dart';
 import 'package:movie_hub/models/movie_details.dart';
 import 'package:movie_hub/models/movies_images.dart';
 import 'package:movie_hub/models/serie_details.dart';
+import 'package:movie_hub/views/movie_details.dart';
+import 'package:movie_hub/views/serie_details.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:readmore/readmore.dart';
 
@@ -133,317 +135,48 @@ class _DetailsPageState extends State<DetailsPage> {
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: detailsMovie != null
-            ? SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Stack(
-                      children: [
-                        Image.network(
-                          "${Vars.imageBaseUrl}${detailsMovie!.backdropPath}",
-                          height: MediaQuery.of(context).size.height / 2,
-                          width: MediaQuery.of(context).size.width,
-                        ),
-                        Container(
-                          height: MediaQuery.of(context).size.height / 2,
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.transparent,
-                                Colors.black,
-                              ],
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                detailsMovie!.title,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  Text(
-                                    detailsMovie!.voteAverage
-                                        .toStringAsFixed(2),
-                                    style: const TextStyle(
-                                      fontSize: 22,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  RatingBarIndicator(
-                                    rating: detailsMovie!.voteAverage / 2,
-                                    itemBuilder: (context, index) => const Icon(
-                                      Icons.star,
-                                      color: AppColors.primaryColor,
-                                    ),
-                                    itemCount: 5,
-                                    itemSize: 25,
-                                    direction: Axis.horizontal,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Text(detailsMovie!.genres
-                                  .map(
-                                    (e) => generesMovie
-                                        .firstWhere(
-                                            (element) => element.id == e.id)
-                                        .name,
-                                  )
-                                  .join(", ")),
-                            ],
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: const Icon(
-                              Icons.chevron_left,
-                              color: AppColors.primaryColor,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    ReadMoreText(
-                      detailsMovie!.overview,
-                      trimMode: TrimMode.Line,
-                      trimLines: 5,
-                      trimCollapsedText: ' Mostra altro'.tr(),
-                      trimExpandedText: ' Mostra meno'.tr(),
-                      style: const TextStyle(
-                        color: Colors.grey,
-                      ),
-                      moreStyle: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primaryColor,
-                      ),
-                      lessStyle: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primaryColor,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    buildAppbar("Galleria".tr(), null).title!,
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      height: 250,
-                      width: MediaQuery.of(context).size.width,
-                      child: PhotoViewGallery.builder(
-                        onPageChanged: (index) {
-                          setState(() {
-                            selectedImg = images[index];
-                          });
-                        },
-                        itemCount: images.length,
-                        builder: (context, index) {
-                          return PhotoViewGalleryPageOptions(
-                            imageProvider: NetworkImage(images[index]),
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    FilledButton(
-                      onPressed: selectedImg != ""
-                          ? () async {
-                              //TODO download image from link
-                            }
-                          : null,
-                      style: FilledButton.styleFrom(
-                        minimumSize:
-                            Size(MediaQuery.of(context).size.width, 40),
-                        backgroundColor: AppColors.primaryColor,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                      child: Text("Scarica immagine".tr()),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
+            ? MovieDetailsPage(
+                backdrop: detailsMovie!.posterPath,
+                title: detailsMovie!.title,
+                overview: detailsMovie!.overview,
+                vote: detailsMovie!.voteAverage,
+                genres: detailsMovie!.genres,
+                images: images,
+                generesMovie: generesMovie,
+                onPageChanged: (index) {
+                  setState(() {
+                    selectedImg = images[index];
+                  });
+                },
+                onDownload: selectedImg != ""
+                    ? () async {
+                        //TODO download image from link
+                      }
+                    : null,
               )
             : detailsSerie != null
-                ? SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Stack(
-                          children: [
-                            Image.network(
-                              "${Vars.imageBaseUrl}${detailsSerie!.backdropPath}",
-                              height: MediaQuery.of(context).size.height / 2,
-                              width: MediaQuery.of(context).size.width,
-                            ),
-                            Container(
-                              height: MediaQuery.of(context).size.height / 2,
-                              decoration: const BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.transparent,
-                                    Colors.black,
-                                  ],
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    detailsSerie!.name,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        detailsSerie!.voteAverage
-                                            .toStringAsFixed(2),
-                                        style: const TextStyle(
-                                          fontSize: 22,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      RatingBarIndicator(
-                                        rating: detailsSerie!.voteAverage / 2,
-                                        itemBuilder: (context, index) =>
-                                            const Icon(
-                                          Icons.star,
-                                          color: AppColors.primaryColor,
-                                        ),
-                                        itemCount: 5,
-                                        itemSize: 25,
-                                        direction: Axis.horizontal,
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    "${(detailsSerie!.firstAirDate?.year ?? "N/A")} - ${detailsSerie!.inProduction ? "In corso".tr() : (detailsSerie!.lastAirDate?.year ?? "N/A")} (${detailsSerie!.numberOfEpisodes} ${"episodi".tr()})",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(detailsSerie!.genres
-                                      .map(
-                                        (e) => generesSeries
-                                            .firstWhere(
-                                                (element) => element.id == e.id)
-                                            .name,
-                                      )
-                                      .join(", ")),
-                                ],
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: const Icon(
-                                  Icons.chevron_left,
-                                  color: AppColors.primaryColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        ReadMoreText(
-                          detailsSerie!.overview,
-                          trimMode: TrimMode.Line,
-                          trimLines: 5,
-                          trimCollapsedText: ' Mostra altro'.tr(),
-                          trimExpandedText: ' Mostra meno'.tr(),
-                          style: const TextStyle(
-                            color: Colors.grey,
-                          ),
-                          moreStyle: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primaryColor,
-                          ),
-                          lessStyle: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primaryColor,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        const Divider(),
-                        buildAppbar("Dove Guardare".tr(), null).title!,
-                        const SizedBox(height: 20),
-                        const Divider(),
-                        buildAppbar("Galleria".tr(), null).title!,
-                        const SizedBox(height: 10),
-                        SizedBox(
-                          height: 250,
-                          width: MediaQuery.of(context).size.width,
-                          child: PhotoViewGallery.builder(
-                            onPageChanged: (index) {
-                              setState(() {
-                                selectedImg = images[index];
-                              });
-                            },
-                            itemCount: images.length,
-                            builder: (context, index) {
-                              return PhotoViewGalleryPageOptions(
-                                imageProvider: NetworkImage(images[index]),
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        FilledButton(
-                          onPressed: selectedImg != ""
-                              ? () async {
-                                  //TODO download image from link
-                                }
-                              : null,
-                          style: FilledButton.styleFrom(
-                            minimumSize:
-                                Size(MediaQuery.of(context).size.width, 40),
-                            backgroundColor: AppColors.primaryColor,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                          child: Text("Scarica immagine".tr()),
-                        ),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
+                ? SerieDetailsPage(
+                    backdropPath: detailsSerie!.posterPath,
+                    name: detailsSerie!.name,
+                    overview: detailsSerie!.overview,
+                    vote: detailsSerie!.voteAverage,
+                    numberOfEpisodes: detailsSerie!.numberOfEpisodes,
+                    inProduction: detailsSerie!.inProduction,
+                    firstAirDate: detailsSerie!.firstAirDate,
+                    lastAirDate: detailsSerie!.lastAirDate,
+                    genres: detailsSerie!.genres,
+                    generesSeries: generesSeries,
+                    images: images,
+                    onPageChanged: (index) {
+                      setState(() {
+                        selectedImg = images[index];
+                      });
+                    },
+                    onDownload: selectedImg != ""
+                        ? () async {
+                            //TODO download image from link
+                          }
+                        : null,
                   )
                 : const SizedBox.shrink(),
       ),
