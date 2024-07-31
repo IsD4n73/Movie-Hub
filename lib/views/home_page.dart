@@ -1,9 +1,9 @@
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_hub/commons/app_colors.dart';
 import 'package:movie_hub/commons/vars.dart';
+import 'package:movie_hub/controllers/details_controller.dart';
 import 'package:movie_hub/models/discover_movies.dart';
 import 'package:movie_hub/models/discover_series.dart';
 import 'package:movie_hub/models/tmdb_genreIds.dart';
@@ -33,24 +33,12 @@ class _HomePageState extends State<HomePage> {
       Duration.zero,
       () async {
         // get the genere for movies
-        generesMovie = TmdbGenreIds.fromJson((await Vars.tmdbClient.genres
-                    .getMovieList(language: context.locale.languageCode)
-                as Map<String, dynamic>))
-            .genres
-            .map(
-              (e) => e,
-            )
-            .toList();
+        generesMovie =
+            await DetailsController.getGenresMovie(context.locale.languageCode);
 
         // get the genere for series
-        generesSeries = TmdbGenreIds.fromJson((await Vars.tmdbClient.genres
-                    .getTvlist(language: context.locale.languageCode)
-                as Map<String, dynamic>))
-            .genres
-            .map(
-              (e) => e,
-            )
-            .toList();
+        generesSeries =
+            await DetailsController.getGenresSerie(context.locale.languageCode);
 
         // get discover new movie
         var mov = await Vars.tmdbClient.discover

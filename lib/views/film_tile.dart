@@ -11,12 +11,12 @@ class FilmTile extends StatelessWidget {
 
   factory FilmTile.empty() {
     return FilmTile(
-        title: "title",
-        description: "description",
-        imageUrl: "imageUrl",
+        title: "title movie",
+        description: "lore ipsum description",
+        imageUrl: "",
         rating: 0,
         onTap: () {},
-        tags: "tags");
+        tags: "tags,tags,tags");
   }
 
   const FilmTile({
