@@ -1,14 +1,16 @@
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:movie_hub/controllers/details_controller.dart';
 import 'package:movie_hub/models/movie_details.dart';
 import 'package:movie_hub/models/serie_details.dart';
 import 'package:movie_hub/views/movie_details.dart';
 import 'package:movie_hub/views/serie_details.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-import '../commons/vars.dart';
-import '../models/serie_images.dart';
 import '../models/tmdb_genreIds.dart' as genreIds;
 
 class DetailsPage extends StatefulWidget {
@@ -102,7 +104,20 @@ class _DetailsPageState extends State<DetailsPage> {
                 },
                 onDownload: selectedImg != ""
                     ? () async {
-                        //TODO download image from link
+                        await [
+                          Permission.storage,
+                          Permission.manageExternalStorage,
+                        ].request();
+
+                        var response = await Dio().get(
+                          selectedImg,
+                          options: Options(responseType: ResponseType.bytes),
+                        );
+                        await ImageGallerySaver.saveImage(
+                          Uint8List.fromList(response.data),
+                          name: DateTime.timestamp().toString(),
+                        );
+                        BotToast.showText(text: "Immagine salvata".tr());
                       }
                     : null,
               )
@@ -126,7 +141,21 @@ class _DetailsPageState extends State<DetailsPage> {
                     },
                     onDownload: selectedImg != ""
                         ? () async {
-                            //TODO download image from link
+                            await [
+                              Permission.storage,
+                              Permission.manageExternalStorage,
+                            ].request();
+
+                            var response = await Dio().get(
+                              selectedImg,
+                              options:
+                                  Options(responseType: ResponseType.bytes),
+                            );
+                            await ImageGallerySaver.saveImage(
+                              Uint8List.fromList(response.data),
+                              name: DateTime.timestamp().toString(),
+                            );
+                            BotToast.showText(text: "Immagine salvata".tr());
                           }
                         : null,
                   )

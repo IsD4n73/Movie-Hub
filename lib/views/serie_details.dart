@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -175,18 +176,20 @@ class SerieDetailsPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          FilledButton(
-            onPressed: onDownload,
-            style: FilledButton.styleFrom(
-              minimumSize: Size(MediaQuery.of(context).size.width, 40),
-              backgroundColor: AppColors.primaryColor,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-            ),
-            child: Text("Scarica immagine".tr()),
-          ),
+          kIsWeb
+              ? const SizedBox.shrink()
+              : FilledButton(
+                  onPressed: onDownload,
+                  style: FilledButton.styleFrom(
+                    minimumSize: Size(MediaQuery.of(context).size.width, 40),
+                    backgroundColor: AppColors.primaryColor,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                  ),
+                  child: Text("Scarica immagine".tr()),
+                ),
           const SizedBox(height: 20),
         ],
       ),
