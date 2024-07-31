@@ -165,32 +165,34 @@ class SerieDetailsPage extends StatelessWidget {
           SizedBox(
             height: 100,
             width: MediaQuery.of(context).size.width,
-            child: ListView.builder(
-              itemCount: providers.length,
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return Card(
-                  margin: const EdgeInsets.all(4),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(
-                            Vars.imageBaseUrl + providers[index].logoPath,
+            child: providers.isEmpty
+                ? Text("Non disponibile".tr())
+                : ListView.builder(
+                    itemCount: providers.length,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        margin: const EdgeInsets.all(4),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                  Vars.imageBaseUrl + providers[index].logoPath,
+                                ),
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                providers[index].providerName,
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 5),
-                        Text(
-                          providers[index].providerName,
-                        ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
           const Divider(),
           buildAppbar("Galleria", null).title!,
