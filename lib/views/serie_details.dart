@@ -10,6 +10,7 @@ import '../models/tmdb_genreIds.dart' as genreIds;
 
 import '../commons/app_colors.dart';
 import '../commons/vars.dart';
+import '../models/watch_provider.dart';
 
 class SerieDetailsPage extends StatelessWidget {
   final String backdropPath, name, overview;
@@ -17,6 +18,7 @@ class SerieDetailsPage extends StatelessWidget {
   final int numberOfEpisodes;
   final bool inProduction;
   final DateTime? firstAirDate, lastAirDate;
+  final List<Flatrate> providers;
   final List<Genre> genres;
   final List<genreIds.Genre> generesSeries;
   final List<String> images;
@@ -38,6 +40,7 @@ class SerieDetailsPage extends StatelessWidget {
     required this.images,
     required this.onPageChanged,
     required this.onDownload,
+    required this.providers,
   });
 
   @override
@@ -159,6 +162,36 @@ class SerieDetailsPage extends StatelessWidget {
           const Divider(),
           buildAppbar("Dove Guardare", null).title!,
           const SizedBox(height: 20),
+          SizedBox(
+            height: 100,
+            width: MediaQuery.of(context).size.width,
+            child: ListView.builder(
+              itemCount: providers.length,
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                return Card(
+                  margin: const EdgeInsets.all(4),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(
+                            Vars.imageBaseUrl + providers[index].logoPath,
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          providers[index].providerName,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
           const Divider(),
           buildAppbar("Galleria", null).title!,
           const SizedBox(height: 10),

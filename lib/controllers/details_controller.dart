@@ -1,10 +1,12 @@
 import 'package:movie_hub/models/serie_details.dart';
 import 'package:movie_hub/models/serie_images.dart';
+import 'package:tmdb_api/tmdb_api.dart';
 
 import '../commons/vars.dart';
 import '../models/movie_details.dart';
 import '../models/movies_images.dart';
 import '../models/tmdb_genreIds.dart' as genreIds;
+import '../models/watch_provider.dart';
 
 class DetailsController {
   static Future<List<genreIds.Genre>> getGenresMovie(String language) async {
@@ -80,5 +82,17 @@ class DetailsController {
     }
 
     return images;
+  }
+
+  static Future<WatchProvider> getMovieWatch(int id) async {
+    var json = await Vars.tmdbClient.movies.getWatchProviders(id)
+        as Map<String, dynamic>;
+    return WatchProvider.fromJson(json);
+  }
+
+  static Future<WatchProvider> getSerieWatch(int id) async {
+    var json = await Vars.tmdbClient.tv.getWatchProviders(id.toString())
+        as Map<String, dynamic>;
+    return WatchProvider.fromJson(json);
   }
 }

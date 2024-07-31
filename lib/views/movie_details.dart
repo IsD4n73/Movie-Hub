@@ -10,10 +10,12 @@ import '../models/tmdb_genreIds.dart' as genreIds;
 import '../commons/app_colors.dart';
 import '../commons/vars.dart';
 import '../models/movie_details.dart';
+import '../models/watch_provider.dart';
 
 class MovieDetailsPage extends StatelessWidget {
   final String backdrop, title, overview;
   final double vote;
+  final List<Flatrate> providers;
   final List<Genre> genres;
   final List<String> images;
   final List<genreIds.Genre> generesMovie;
@@ -26,6 +28,7 @@ class MovieDetailsPage extends StatelessWidget {
     required this.title,
     required this.overview,
     required this.vote,
+    required this.providers,
     required this.genres,
     required this.images,
     required this.generesMovie,
@@ -35,6 +38,8 @@ class MovieDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(providers.length);
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,6 +149,36 @@ class MovieDetailsPage extends StatelessWidget {
           const Divider(),
           buildAppbar("Dove Guardare", null).title!,
           const SizedBox(height: 20),
+          SizedBox(
+            height: 100,
+            width: MediaQuery.of(context).size.width,
+            child: ListView.builder(
+              itemCount: providers.length,
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                return Card(
+                  margin: const EdgeInsets.all(4),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(
+                            Vars.imageBaseUrl + providers[index].logoPath,
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          providers[index].providerName,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
           const Divider(),
           buildAppbar("Galleria", null).title!,
           const SizedBox(height: 10),

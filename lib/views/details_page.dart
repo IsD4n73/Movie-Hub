@@ -7,6 +7,7 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:movie_hub/controllers/details_controller.dart';
 import 'package:movie_hub/models/movie_details.dart';
 import 'package:movie_hub/models/serie_details.dart';
+import 'package:movie_hub/models/watch_provider.dart';
 import 'package:movie_hub/views/movie_details.dart';
 import 'package:movie_hub/views/serie_details.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -30,6 +31,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
   late List<genreIds.Genre> generesMovie;
   late List<genreIds.Genre> generesSeries;
+  late WatchProvider watchProvider;
   String selectedImg = "";
 
   @override
@@ -48,6 +50,7 @@ class _DetailsPageState extends State<DetailsPage> {
             await DetailsController.getGenresSerie(context.locale.languageCode);
 
         if (widget.mediaType == "movie") {
+          watchProvider = await DetailsController.getMovieWatch(widget.mediaId);
           detailsMovie =
               await DetailsController.getMovieDetails(widget.mediaId);
           imagesLinks.addAll(
@@ -58,6 +61,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
           setState(() {});
         } else {
+          watchProvider = await DetailsController.getSerieWatch(widget.mediaId);
           detailsSerie =
               await DetailsController.getSerieDetails(widget.mediaId);
 
@@ -97,6 +101,9 @@ class _DetailsPageState extends State<DetailsPage> {
                 genres: detailsMovie!.genres,
                 images: imagesLinks,
                 generesMovie: generesMovie,
+                providers: context.locale.languageCode == "it"
+                    ? watchProvider.results?.it?.flatrate ?? []
+                    : watchProvider.results?.us?.flatrate ?? [],
                 onPageChanged: (index) {
                   setState(() {
                     selectedImg = imagesLinks[index];
@@ -134,6 +141,9 @@ class _DetailsPageState extends State<DetailsPage> {
                     genres: detailsSerie!.genres,
                     generesSeries: generesSeries,
                     images: imagesLinks,
+                    providers: context.locale.languageCode == "it"
+                        ? watchProvider.results?.it?.flatrate ?? []
+                        : watchProvider.results?.us?.flatrate ?? [],
                     onPageChanged: (index) {
                       setState(() {
                         selectedImg = imagesLinks[index];
