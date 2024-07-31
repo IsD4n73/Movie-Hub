@@ -5,6 +5,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:readmore/readmore.dart';
 import '../commons/app_bar.dart';
+import '../models/details_credit.dart';
 import '../models/tmdb_genreIds.dart' as genreIds;
 
 import '../commons/app_colors.dart';
@@ -18,6 +19,7 @@ class MovieDetailsPage extends StatelessWidget {
   final List<Flatrate> providers;
   final List<Genre> genres;
   final List<String> images;
+  final List<Cast> cast;
   final List<genreIds.Genre> generesMovie;
   final void Function(int) onPageChanged;
   final void Function()? onDownload;
@@ -34,6 +36,7 @@ class MovieDetailsPage extends StatelessWidget {
     required this.generesMovie,
     required this.onPageChanged,
     required this.onDownload,
+    required this.cast,
   });
 
   @override
@@ -144,6 +147,51 @@ class MovieDetailsPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
+          buildAppbar("Cast", null).title!,
+          const SizedBox(height: 20),
+          SizedBox(
+            height: 100,
+            width: MediaQuery.of(context).size.width,
+            child: cast.isEmpty
+                ? Text("Non disponibile".tr())
+                : ListView.builder(
+                    itemCount: cast.length,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        margin: const EdgeInsets.all(4),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                  Vars.imageBaseUrl + cast[index].profilePath,
+                                ),
+                              ),
+                              const SizedBox(width: 5),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    cast[index].name,
+                                  ),
+                                  Text(
+                                    cast[index].character,
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
           const Divider(),
           buildAppbar("Dove Guardare", null).title!,
           const SizedBox(height: 20),

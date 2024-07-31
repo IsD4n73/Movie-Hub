@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:movie_hub/controllers/details_controller.dart';
+import 'package:movie_hub/models/details_credit.dart';
 import 'package:movie_hub/models/movie_details.dart';
 import 'package:movie_hub/models/serie_details.dart';
 import 'package:movie_hub/models/watch_provider.dart';
@@ -31,6 +32,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
   late List<genreIds.Genre> generesMovie;
   late List<genreIds.Genre> generesSeries;
+  late List<Cast> cast;
   late WatchProvider watchProvider;
   String selectedImg = "";
 
@@ -51,6 +53,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
         if (widget.mediaType == "movie") {
           watchProvider = await DetailsController.getMovieWatch(widget.mediaId);
+          cast = await DetailsController.getMovieCast(widget.mediaId);
           detailsMovie =
               await DetailsController.getMovieDetails(widget.mediaId);
           imagesLinks.addAll(
@@ -62,6 +65,7 @@ class _DetailsPageState extends State<DetailsPage> {
           setState(() {});
         } else {
           watchProvider = await DetailsController.getSerieWatch(widget.mediaId);
+          cast = await DetailsController.getSerieCast(widget.mediaId);
           detailsSerie =
               await DetailsController.getSerieDetails(widget.mediaId);
 
@@ -94,6 +98,7 @@ class _DetailsPageState extends State<DetailsPage> {
         padding: const EdgeInsets.all(8),
         child: detailsMovie != null
             ? MovieDetailsPage(
+                cast: cast,
                 backdrop: detailsMovie!.posterPath,
                 title: detailsMovie!.title,
                 overview: detailsMovie!.overview,
@@ -130,6 +135,7 @@ class _DetailsPageState extends State<DetailsPage> {
               )
             : detailsSerie != null
                 ? SerieDetailsPage(
+                    cast: cast,
                     backdropPath: detailsSerie!.posterPath,
                     name: detailsSerie!.name,
                     overview: detailsSerie!.overview,

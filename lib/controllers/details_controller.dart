@@ -1,8 +1,7 @@
 import 'package:movie_hub/models/serie_details.dart';
 import 'package:movie_hub/models/serie_images.dart';
-import 'package:tmdb_api/tmdb_api.dart';
-
 import '../commons/vars.dart';
+import '../models/details_credit.dart';
 import '../models/movie_details.dart';
 import '../models/movies_images.dart';
 import '../models/tmdb_genreIds.dart' as genreIds;
@@ -94,5 +93,18 @@ class DetailsController {
     var json = await Vars.tmdbClient.tv.getWatchProviders(id.toString())
         as Map<String, dynamic>;
     return WatchProvider.fromJson(json);
+  }
+
+  static Future<List<Cast>> getMovieCast(int id) async {
+    var json =
+        await Vars.tmdbClient.movies.getCredits(id) as Map<String, dynamic>;
+    var details = DetailsCredit.fromJson(json);
+    return details.cast;
+  }
+
+  static Future<List<Cast>> getSerieCast(int id) async {
+    var json = await Vars.tmdbClient.tv.getCredits(id) as Map<String, dynamic>;
+    var details = DetailsCredit.fromJson(json);
+    return details.cast;
   }
 }
