@@ -1,16 +1,11 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:movie_hub/commons/app_bar.dart';
-import 'package:movie_hub/commons/app_colors.dart';
+import 'package:movie_hub/controllers/details_controller.dart';
 import 'package:movie_hub/models/movie_details.dart';
-import 'package:movie_hub/models/movies_images.dart';
 import 'package:movie_hub/models/serie_details.dart';
 import 'package:movie_hub/views/movie_details.dart';
 import 'package:movie_hub/views/serie_details.dart';
-import 'package:photo_view/photo_view_gallery.dart';
-import 'package:readmore/readmore.dart';
 
 import '../commons/vars.dart';
 import '../models/serie_images.dart';
@@ -27,7 +22,7 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
-  List<String> images = [];
+  List<String> imagesLinks = [];
   MovieDetails? detailsMovie;
   SerieDetails? detailsSerie;
 
@@ -41,78 +36,35 @@ class _DetailsPageState extends State<DetailsPage> {
       Duration.zero,
       () async {
         var cancel = BotToast.showLoading();
+
         // get the genere for movies
-        generesMovie = genreIds.TmdbGenreIds.fromJson((await Vars
-                    .tmdbClient.genres
-                    .getMovieList(language: context.locale.languageCode)
-                as Map<String, dynamic>))
-            .genres
-            .map(
-              (e) => e,
-            )
-            .toList();
+        generesMovie =
+            await DetailsController.getGenresMovie(context.locale.languageCode);
 
         // get the genere for series
-        generesSeries = genreIds.TmdbGenreIds.fromJson((await Vars
-                    .tmdbClient.genres
-                    .getTvlist(language: context.locale.languageCode)
-                as Map<String, dynamic>))
-            .genres
-            .map(
-              (e) => e,
-            )
-            .toList();
+        generesSeries =
+            await DetailsController.getGenresSerie(context.locale.languageCode);
 
         if (widget.mediaType == "movie") {
-          var json = await Vars.tmdbClient.movies.getDetails(widget.mediaId)
-              as Map<String, dynamic>;
-          detailsMovie = MovieDetails.fromJson(json);
-
-          var imageJson = await Vars.tmdbClient.movies.getImages(widget.mediaId,
-                  includeImageLanguage:
-                      "${context.supportedLocales.join(",")},null")
-              as Map<String, dynamic>;
-          MoviesImages imgs = MoviesImages.fromJson(imageJson);
-
-          var links = imgs.posters
-              .map((e) => "${Vars.imageBaseUrl}${e.filePath}")
-              .toList();
-
-          links.addAll(
-            imgs.backdrops.map((e) => "${Vars.imageBaseUrl}${e.filePath}"),
+          detailsMovie =
+              await DetailsController.getMovieDetails(widget.mediaId);
+          imagesLinks.addAll(
+            await DetailsController.getMovieImage(
+                widget.mediaId, "${context.supportedLocales.join(",")},null"),
           );
-
-          for (var url in links) {
-            images.add(url);
-          }
-
-          selectedImg = images.first;
+          selectedImg = imagesLinks.first;
 
           setState(() {});
         } else {
-          var json = await Vars.tmdbClient.tv.getDetails(widget.mediaId)
-              as Map<String, dynamic>;
-          detailsSerie = SerieDetails.fromJson(json);
+          detailsSerie =
+              await DetailsController.getSerieDetails(widget.mediaId);
 
-          var imageJson = await Vars.tmdbClient.tv.getImages(widget.mediaId,
-                  includeImageLanguage:
-                      "${context.supportedLocales.join(",")},null")
-              as Map<String, dynamic>;
-          SerieImages imgs = SerieImages.fromJson(imageJson);
-
-          var links = imgs.posters
-              .map((e) => "${Vars.imageBaseUrl}${e.filePath}")
-              .toList();
-
-          links.addAll(
-            imgs.backdrops.map((e) => "${Vars.imageBaseUrl}${e.filePath}"),
+          imagesLinks.addAll(
+            await DetailsController.getSerieImage(
+                widget.mediaId, "${context.supportedLocales.join(",")},null"),
           );
 
-          for (var url in links) {
-            images.add(url);
-          }
-
-          selectedImg = images.first;
+          selectedImg = imagesLinks.first;
 
           setState(() {});
         }
@@ -141,11 +93,11 @@ class _DetailsPageState extends State<DetailsPage> {
                 overview: detailsMovie!.overview,
                 vote: detailsMovie!.voteAverage,
                 genres: detailsMovie!.genres,
-                images: images,
+                images: imagesLinks,
                 generesMovie: generesMovie,
                 onPageChanged: (index) {
                   setState(() {
-                    selectedImg = images[index];
+                    selectedImg = imagesLinks[index];
                   });
                 },
                 onDownload: selectedImg != ""
@@ -166,10 +118,10 @@ class _DetailsPageState extends State<DetailsPage> {
                     lastAirDate: detailsSerie!.lastAirDate,
                     genres: detailsSerie!.genres,
                     generesSeries: generesSeries,
-                    images: images,
+                    images: imagesLinks,
                     onPageChanged: (index) {
                       setState(() {
-                        selectedImg = images[index];
+                        selectedImg = imagesLinks[index];
                       });
                     },
                     onDownload: selectedImg != ""

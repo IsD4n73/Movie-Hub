@@ -15,8 +15,12 @@ import 'package:tmdb_api/tmdb_api.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized().then(
+    (_) {
+      FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+    },
+  );
 
-  await EasyLocalization.ensureInitialized();
   await dotenv.load(fileName: ".env");
   Vars.packageInfo = await PackageInfo.fromPlatform();
 
@@ -78,6 +82,8 @@ class _AppScaffoldState extends State<AppScaffold> {
         logConfig: const ConfigLogger.recommended(),
       ).v3;
     });
+
+    FlutterNativeSplash.remove();
 
     super.initState();
   }
