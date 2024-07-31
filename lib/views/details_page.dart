@@ -241,6 +241,8 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    buildAppbar("Galleria".tr(), null).title!,
+                    const SizedBox(height: 20),
                     SizedBox(
                       height: 250,
                       width: MediaQuery.of(context).size.width,
