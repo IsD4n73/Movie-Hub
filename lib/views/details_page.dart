@@ -106,6 +106,7 @@ class _DetailsPageState extends State<DetailsPage> {
               detailsMovie != null
                   ? MovieDetailsPage(
                       cast: cast,
+                      producer: detailsMovie!.productionCompanies.first,
                       backdrop: detailsMovie!.posterPath,
                       title: detailsMovie!.title,
                       overview: detailsMovie!.overview,
@@ -145,6 +146,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       ? SerieDetailsPage(
                           tvId: detailsSerie!.id,
                           cast: cast,
+                          producer: detailsSerie!.networks.first,
                           selectedTab: selectedTab,
                           onTabChanged: (i) => setState(() => selectedTab = i),
                           backdropPath: detailsSerie!.posterPath,

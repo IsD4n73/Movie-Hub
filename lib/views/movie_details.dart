@@ -16,6 +16,7 @@ import '../models/watch_provider.dart';
 class MovieDetailsPage extends StatelessWidget {
   final String backdrop, title, overview;
   final double vote;
+  final ProductionCompany? producer;
   final List<Flatrate> providers;
   final List<Genre> genres;
   final List<String> images;
@@ -37,6 +38,7 @@ class MovieDetailsPage extends StatelessWidget {
     required this.onPageChanged,
     required this.onDownload,
     required this.cast,
+    required this.producer,
   });
 
   @override
@@ -78,7 +80,16 @@ class MovieDetailsPage extends StatelessWidget {
                         fontSize: 20,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 5),
+                    producer == null
+                        ? const SizedBox.shrink()
+                        : Image.network(
+                            Vars.imageBaseUrl + producer!.logoPath,
+                            width: 30,
+                            height: 30,
+                            color: Colors.white,
+                          ),
+                    const SizedBox(height: 5),
                     Row(
                       children: [
                         Text(

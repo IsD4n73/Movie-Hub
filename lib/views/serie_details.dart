@@ -20,6 +20,7 @@ class SerieDetailsPage extends StatelessWidget {
   final double vote;
   final int numberOfEpisodes, selectedTab, tvId;
   final bool inProduction;
+  final Network? producer;
   final DateTime? firstAirDate, lastAirDate;
   final List<Season> seasons;
   final List<Flatrate> providers;
@@ -52,6 +53,7 @@ class SerieDetailsPage extends StatelessWidget {
     required this.selectedTab,
     required this.onTabChanged,
     required this.tvId,
+    required this.producer,
   });
 
   @override
@@ -93,7 +95,16 @@ class SerieDetailsPage extends StatelessWidget {
                         fontSize: 20,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 5),
+                    producer == null
+                        ? const SizedBox.shrink()
+                        : Image.network(
+                            Vars.imageBaseUrl + producer!.logoPath,
+                            width: 30,
+                            height: 30,
+                            color: Colors.white,
+                          ),
+                    const SizedBox(height: 5),
                     Row(
                       children: [
                         Text(
