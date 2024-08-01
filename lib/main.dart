@@ -1,4 +1,9 @@
 import 'package:bot_toast/bot_toast.dart';
+import 'package:catcher_2/catcher_2.dart';
+import 'package:catcher_2/core/catcher_2.dart';
+import 'package:catcher_2/handlers/console_handler.dart';
+import 'package:catcher_2/mode/dialog_report_mode.dart';
+import 'package:catcher_2/model/catcher_2_options.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -24,8 +29,59 @@ void main() async {
   await dotenv.load(fileName: ".env");
   Vars.packageInfo = await PackageInfo.fromPlatform();
 
-  runApp(
-    EasyLocalization(
+  Catcher2Options debugOptions = Catcher2Options(
+    DialogReportMode(),
+    [
+      ConsoleHandler(),
+      DiscordHandler(
+        Vars.discordUrl,
+        enableApplicationParameters: true,
+        enableDeviceParameters: true,
+        printLogs: true,
+        enableStackTrace: true,
+        enableCustomParameters: true,
+      ),
+    ],
+    localizationOptions: [
+      LocalizationOptions.buildDefaultItalianOptions(),
+      LocalizationOptions.buildDefaultEnglishOptions(),
+    ],
+    filterFunction: (report) {
+      var filter = !report.stackTrace.toString().contains("NetworkImage");
+      if (filter) {
+        BotToast.closeAllLoading();
+      }
+      return filter;
+    },
+  );
+
+  Catcher2Options releaseOptions = Catcher2Options(
+    DialogReportMode(),
+    [
+      DiscordHandler(
+        Vars.discordUrl,
+        enableApplicationParameters: true,
+        enableDeviceParameters: true,
+        printLogs: true,
+        enableStackTrace: true,
+        enableCustomParameters: true,
+      ),
+    ],
+    localizationOptions: [
+      LocalizationOptions.buildDefaultItalianOptions(),
+      LocalizationOptions.buildDefaultEnglishOptions(),
+    ],
+    filterFunction: (report) {
+      var filter = !report.stackTrace.toString().contains("NetworkImage");
+      if (filter) {
+        BotToast.closeAllLoading();
+      }
+      return filter;
+    },
+  );
+
+  Catcher2(
+    rootWidget: EasyLocalization(
       supportedLocales: const [
         Locale('en'),
         Locale('it'),
@@ -34,6 +90,8 @@ void main() async {
       fallbackLocale: const Locale('en'),
       child: const MyApp(),
     ),
+    debugConfig: debugOptions,
+    releaseConfig: releaseOptions,
   );
 }
 
@@ -42,9 +100,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final botToastBuilder = BotToastInit();
+
     return MaterialApp(
       title: 'Movie Hub',
-      builder: BotToastInit(),
+      builder: (context, child) {
+        Catcher2.addDefaultErrorWidget();
+        child = botToastBuilder(context, child);
+        return child;
+      },
+      navigatorKey: Catcher2.navigatorKey,
       navigatorObservers: [BotToastNavigatorObserver()],
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
