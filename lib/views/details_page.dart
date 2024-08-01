@@ -1,3 +1,4 @@
+import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -13,6 +14,7 @@ import 'package:movie_hub/views/movie_details.dart';
 import 'package:movie_hub/views/serie_details.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../commons/app_colors.dart';
 import '../models/tmdb_genreIds.dart' as genreIds;
 
 class DetailsPage extends StatefulWidget {
@@ -34,7 +36,9 @@ class _DetailsPageState extends State<DetailsPage> {
   late List<genreIds.Genre> generesSeries;
   late List<Cast> cast;
   late WatchProvider watchProvider;
+
   String selectedImg = "";
+  int selectedTab = 0;
 
   @override
   void initState() {
@@ -94,88 +98,100 @@ class _DetailsPageState extends State<DetailsPage> {
         backgroundColor: Colors.transparent,
         toolbarHeight: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8),
-        child: detailsMovie != null
-            ? MovieDetailsPage(
-                cast: cast,
-                backdrop: detailsMovie!.posterPath,
-                title: detailsMovie!.title,
-                overview: detailsMovie!.overview,
-                vote: detailsMovie!.voteAverage,
-                genres: detailsMovie!.genres,
-                images: imagesLinks,
-                generesMovie: generesMovie,
-                providers: context.locale.languageCode == "it"
-                    ? watchProvider.results?.it?.flatrate ?? []
-                    : watchProvider.results?.us?.flatrate ?? [],
-                onPageChanged: (index) {
-                  setState(() {
-                    selectedImg = imagesLinks[index];
-                  });
-                },
-                onDownload: selectedImg != ""
-                    ? () async {
-                        await [
-                          Permission.storage,
-                          Permission.manageExternalStorage,
-                        ].request();
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            children: [
+              detailsMovie != null
+                  ? MovieDetailsPage(
+                      cast: cast,
+                      backdrop: detailsMovie!.posterPath,
+                      title: detailsMovie!.title,
+                      overview: detailsMovie!.overview,
+                      vote: detailsMovie!.voteAverage,
+                      genres: detailsMovie!.genres,
+                      images: imagesLinks,
+                      generesMovie: generesMovie,
+                      providers: context.locale.languageCode == "it"
+                          ? watchProvider.results?.it?.flatrate ?? []
+                          : watchProvider.results?.us?.flatrate ?? [],
+                      onPageChanged: (index) {
+                        setState(() {
+                          selectedImg = imagesLinks[index];
+                        });
+                      },
+                      onDownload: selectedImg != ""
+                          ? () async {
+                              await [
+                                Permission.storage,
+                                Permission.manageExternalStorage,
+                              ].request();
 
-                        var response = await Dio().get(
-                          selectedImg,
-                          options: Options(responseType: ResponseType.bytes),
-                        );
-                        await ImageGallerySaver.saveImage(
-                          Uint8List.fromList(response.data),
-                          name: DateTime.timestamp().toString(),
-                        );
-                        BotToast.showText(text: "Immagine salvata".tr());
-                      }
-                    : null,
-              )
-            : detailsSerie != null
-                ? SerieDetailsPage(
-                    cast: cast,
-                    backdropPath: detailsSerie!.posterPath,
-                    name: detailsSerie!.name,
-                    overview: detailsSerie!.overview,
-                    vote: detailsSerie!.voteAverage,
-                    numberOfEpisodes: detailsSerie!.numberOfEpisodes,
-                    inProduction: detailsSerie!.inProduction,
-                    firstAirDate: detailsSerie!.firstAirDate,
-                    lastAirDate: detailsSerie!.lastAirDate,
-                    genres: detailsSerie!.genres,
-                    generesSeries: generesSeries,
-                    images: imagesLinks,
-                    providers: context.locale.languageCode == "it"
-                        ? watchProvider.results?.it?.flatrate ?? []
-                        : watchProvider.results?.us?.flatrate ?? [],
-                    onPageChanged: (index) {
-                      setState(() {
-                        selectedImg = imagesLinks[index];
-                      });
-                    },
-                    onDownload: selectedImg != ""
-                        ? () async {
-                            await [
-                              Permission.storage,
-                              Permission.manageExternalStorage,
-                            ].request();
+                              var response = await Dio().get(
+                                selectedImg,
+                                options:
+                                    Options(responseType: ResponseType.bytes),
+                              );
+                              await ImageGallerySaver.saveImage(
+                                Uint8List.fromList(response.data),
+                                name: DateTime.timestamp().toString(),
+                              );
+                              BotToast.showText(text: "Immagine salvata".tr());
+                            }
+                          : null,
+                    )
+                  : detailsSerie != null
+                      ? SerieDetailsPage(
+                          tvId: detailsSerie!.id,
+                          cast: cast,
+                          selectedTab: selectedTab,
+                          onTabChanged: (i) => setState(() => selectedTab = i),
+                          backdropPath: detailsSerie!.posterPath,
+                          name: detailsSerie!.name,
+                          seasons: detailsSerie!.seasons,
+                          overview: detailsSerie!.overview,
+                          vote: detailsSerie!.voteAverage,
+                          numberOfEpisodes: detailsSerie!.numberOfEpisodes,
+                          inProduction: detailsSerie!.inProduction,
+                          firstAirDate: detailsSerie!.firstAirDate,
+                          lastAirDate: detailsSerie!.lastAirDate,
+                          genres: detailsSerie!.genres,
+                          generesSeries: generesSeries,
+                          images: imagesLinks,
+                          providers: context.locale.languageCode == "it"
+                              ? watchProvider.results?.it?.flatrate ?? []
+                              : watchProvider.results?.us?.flatrate ?? [],
+                          onPageChanged: (index) {
+                            setState(() {
+                              selectedImg = imagesLinks[index];
+                            });
+                          },
+                          onDownload: selectedImg != ""
+                              ? () async {
+                                  await [
+                                    Permission.storage,
+                                    Permission.manageExternalStorage,
+                                  ].request();
 
-                            var response = await Dio().get(
-                              selectedImg,
-                              options:
-                                  Options(responseType: ResponseType.bytes),
-                            );
-                            await ImageGallerySaver.saveImage(
-                              Uint8List.fromList(response.data),
-                              name: DateTime.timestamp().toString(),
-                            );
-                            BotToast.showText(text: "Immagine salvata".tr());
-                          }
-                        : null,
-                  )
-                : const SizedBox.shrink(),
+                                  var response = await Dio().get(
+                                    selectedImg,
+                                    options: Options(
+                                        responseType: ResponseType.bytes),
+                                  );
+                                  await ImageGallerySaver.saveImage(
+                                    Uint8List.fromList(response.data),
+                                    name: DateTime.timestamp().toString(),
+                                  );
+                                  BotToast.showText(
+                                      text: "Immagine salvata".tr());
+                                }
+                              : null,
+                        )
+                      : const SizedBox.shrink(),
+            ],
+          ),
+        ),
       ),
     );
   }

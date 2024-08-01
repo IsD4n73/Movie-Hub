@@ -270,7 +270,7 @@ packages:
     source: hosted
     version: "2.0.3"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
@@ -333,6 +333,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.0"
+  modal_bottom_sheet:
+    dependency: "direct main"
+    description:
+      name: modal_bottom_sheet
+      sha256: eac66ef8cb0461bf069a38c5eb0fa728cee525a531a8304bd3f7b2185407c67e
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   package_info_plus:
     dependency: "direct main"
     description:
@@ -537,10 +545,10 @@ packages:
     dependency: "direct main"
     description:
       name: skeletonizer
-      sha256: "9dcaec747d200a299bc457ffe51f135b9856b7f9097e851e277c4c95f563893b"
+      sha256: "3b202e4fa9c49b017d368fb0e570d4952bcd19972b67b2face071bdd68abbfae"
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.1+1"
+    version: "1.4.2"
   sky_engine:
     dependency: transitive
     description: flutter

@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
             current: selectedType,
             values: const [0, 1],
             height: 70,
-            indicatorSize: const Size.fromWidth(90),
+            indicatorSize: Size.fromWidth(MediaQuery.of(context).size.width),
             iconBuilder: (value) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                     style: const TextStyle(
                       color: Colors.white,
                     ),
-                  ),
+                  ).tr(),
                 ],
               );
             },
@@ -95,6 +95,7 @@ class _HomePageState extends State<HomePage> {
             ),
             onChanged: (i) => setState(() => selectedType = i),
           ),
+          const SizedBox(height: 20),
           allLoaded
               ? selectedType == 0 // movie type
                   ? ListView.builder(
