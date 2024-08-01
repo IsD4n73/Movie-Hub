@@ -53,6 +53,7 @@ class MovieDetailsPage extends StatelessWidget {
                 "${Vars.imageBaseUrl}$backdrop",
                 height: MediaQuery.of(context).size.height / 2,
                 width: MediaQuery.of(context).size.width,
+                fit: BoxFit.fitWidth,
               ),
               Container(
                 height: MediaQuery.of(context).size.height / 2,
