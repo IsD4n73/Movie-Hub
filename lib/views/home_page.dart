@@ -63,111 +63,114 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          AnimatedToggleSwitch<int>.size(
-            current: selectedType,
-            values: const [0, 1],
-            height: 70,
-            indicatorSize: Size.fromWidth(MediaQuery.of(context).size.width),
-            iconBuilder: (value) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    value == 0 ? Icons.movie : Icons.tv,
-                    color: Colors.white,
-                  ),
-                  Text(
-                    value == 0 ? "Films" : "Serie TV",
-                    style: const TextStyle(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5),
+        child: Column(
+          children: [
+            AnimatedToggleSwitch<int>.size(
+              current: selectedType,
+              values: const [0, 1],
+              height: 70,
+              indicatorSize: Size.fromWidth(MediaQuery.of(context).size.width),
+              iconBuilder: (value) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      value == 0 ? Icons.movie : Icons.tv,
                       color: Colors.white,
                     ),
-                  ).tr(),
-                ],
-              );
-            },
-            iconAnimationType: AnimationType.onSelected,
-            style: ToggleStyle(
-              borderColor: Colors.transparent,
-              borderRadius: BorderRadius.circular(10),
-              indicatorColor: AppColors.primaryColor,
+                    Text(
+                      value == 0 ? "Films" : "Serie TV",
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
+                    ).tr(),
+                  ],
+                );
+              },
+              iconAnimationType: AnimationType.onSelected,
+              style: ToggleStyle(
+                borderColor: Colors.transparent,
+                borderRadius: BorderRadius.circular(10),
+                indicatorColor: AppColors.primaryColor,
+              ),
+              onChanged: (i) => setState(() => selectedType = i),
             ),
-            onChanged: (i) => setState(() => selectedType = i),
-          ),
-          const SizedBox(height: 20),
-          allLoaded
-              ? selectedType == 0 // movie type
-                  ? ListView.builder(
-                      itemCount: movies.results.length,
+            const SizedBox(height: 20),
+            allLoaded
+                ? selectedType == 0 // movie type
+                    ? ListView.builder(
+                        itemCount: movies.results.length,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return FilmTile(
+                            title: movies.results[index].title,
+                            description: movies.results[index].overview,
+                            imageUrl: movies.results[index].posterPath,
+                            rating: movies.results[index].voteAverage,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailsPage(
+                                      movies.results[index].id, "movie"),
+                                ),
+                              );
+                            },
+                            tags: movies.results[index].genreIds
+                                .map(
+                                  (e) => generesMovie
+                                      .firstWhere((element) => element.id == e)
+                                      .name,
+                                )
+                                .join(", "),
+                          );
+                        },
+                      )
+                    : ListView.builder(
+                        itemCount: movies.results.length,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return FilmTile(
+                            title: series.results[index].name,
+                            description: series.results[index].overview,
+                            imageUrl: series.results[index].posterPath,
+                            rating: series.results[index].voteAverage,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailsPage(
+                                      series.results[index].id, "tv"),
+                                ),
+                              );
+                            },
+                            tags: series.results[index].genreIds
+                                .map(
+                                  (e) => generesSeries
+                                      .firstWhere((element) => element.id == e)
+                                      .name,
+                                )
+                                .join(", "),
+                          );
+                        },
+                      )
+                : Skeletonizer(
+                    enabled: !allLoaded,
+                    child: ListView.builder(
+                      itemCount: 10,
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
-                        return FilmTile(
-                          title: movies.results[index].title,
-                          description: movies.results[index].overview,
-                          imageUrl: movies.results[index].posterPath,
-                          rating: movies.results[index].voteAverage,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DetailsPage(
-                                    movies.results[index].id, "movie"),
-                              ),
-                            );
-                          },
-                          tags: movies.results[index].genreIds
-                              .map(
-                                (e) => generesMovie
-                                    .firstWhere((element) => element.id == e)
-                                    .name,
-                              )
-                              .join(", "),
-                        );
+                        return FilmTile.empty();
                       },
-                    )
-                  : ListView.builder(
-                      itemCount: movies.results.length,
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return FilmTile(
-                          title: series.results[index].name,
-                          description: series.results[index].overview,
-                          imageUrl: series.results[index].posterPath,
-                          rating: series.results[index].voteAverage,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailsPage(series.results[index].id, "tv"),
-                              ),
-                            );
-                          },
-                          tags: series.results[index].genreIds
-                              .map(
-                                (e) => generesSeries
-                                    .firstWhere((element) => element.id == e)
-                                    .name,
-                              )
-                              .join(", "),
-                        );
-                      },
-                    )
-              : Skeletonizer(
-                  enabled: !allLoaded,
-                  child: ListView.builder(
-                    itemCount: 10,
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return FilmTile.empty();
-                    },
+                    ),
                   ),
-                ),
-        ],
+          ],
+        ),
       ),
     );
   }

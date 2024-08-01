@@ -167,7 +167,7 @@ class _SerieDetailsSeasonPageState extends State<SerieDetailsSeasonPage> {
                               Text(
                                 seasonEpisodes![index]
                                     .voteAverage
-                                    .toStringAsFixed(2),
+                                    .toStringAsFixed(1),
                                 style: const TextStyle(
                                   fontSize: 22,
                                 ),

@@ -80,7 +80,7 @@ class FilmTile extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        rating.toStringAsFixed(2),
+                        rating.toStringAsFixed(1),
                         style: const TextStyle(
                           fontSize: 22,
                         ),

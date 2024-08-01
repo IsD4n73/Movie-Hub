@@ -108,7 +108,7 @@ class SerieDetailsPage extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          vote.toStringAsFixed(2),
+                          vote.toStringAsFixed(1),
                           style: const TextStyle(
                             fontSize: 22,
                           ),
