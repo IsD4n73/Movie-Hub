@@ -38,7 +38,7 @@ class _SearchPageState extends State<SearchPage> {
                   icon: const Icon(Icons.clear),
                 ),
               ],
-              onChanged: (value) async {
+              onSubmitted: (value) async {
                 setState(() {
                   search = null;
                 });
